@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:background="@drawable/bg_dialog" android:layout_width="match_parent" android:layout_height="250dp">
+    <TextView android:textSize="24sp" android:textColor="#4ad1b8" android:id="@+id/dialog_skin_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="25dp" android:text="Xin Chờ" android:layout_centerHorizontal="true"/>
+    <ProgressBar android:layout_width="80dp" android:layout_height="80dp" android:layout_centerInParent="true"/>
+</RelativeLayout>

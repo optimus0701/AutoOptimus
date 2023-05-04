@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "185989690781",
+    "firebase_url": "https://auto-optimus-8d43f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "auto-optimus-8d43f",
+    "storage_bucket": "auto-optimus-8d43f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:185989690781:android:8d2b50b039b9473d382b74",
+        "android_client_info": {
+          "package_name": "com.optimus.auto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "185989690781-4qt2lj0d23naklhk6a9bi7qj33g89l67.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.optimus.auto",
+            "certificate_hash": "3139d17df5717df15f303ceb2c238bc614931447"
+          }
+        },
+        {
+          "client_id": "185989690781-c0u2tp4pg97vq2mn6918c9c361elmqg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ8qFSq15EOjdXuIMyPaCtQd39QSRUaoo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "185989690781-c0u2tp4pg97vq2mn6918c9c361elmqg7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:fitsSystemWindows="true" android:layout_width="match_parent" android:layout_height="match_parent">
+    <TextView android:textSize="28sp" android:textStyle="bold" android:textColor="@android:color/holo_red_dark" android:id="@+id/rp_tv_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="20dp" android:text="Báo Lỗi Ứng Dụng" android:layout_centerHorizontal="true"/>
+    <RelativeLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@+id/rp_tv_title">
+        <TextView android:textSize="20sp" android:gravity="center_horizontal" android:id="@+id/rp_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="10dp" android:text="Lưu Ý: Tin Nhắn Thông Báo Sẽ Được Gửi Về Email Của Bạn Dùng Để Đăng Kí Tài Khoản"/>
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/rp_device" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="10dp" android:layout_below="@+id/rp_tv" app:errorEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText android:textColor="#ff43af6b" android:id="@+id/rp_edt_device" android:background="@color/white" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Nhập Tên Thiết Bị" android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/rp_content" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_above="@+id/rp_btn_send" android:layout_below="@+id/rp_device" app:errorEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText android:textColor="#ff43af6b" android:gravity="top|left" android:id="@+id/rp_edt_content" android:background="@color/white" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="10dp" android:hint="Mô Tả Lỗi Của Bạn" android:singleLine="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button android:id="@+id/rp_btn_send" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="30dp" android:text="Gửi" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+</RelativeLayout>
