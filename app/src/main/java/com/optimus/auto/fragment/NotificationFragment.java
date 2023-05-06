@@ -17,7 +17,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.optimus.auto.Notification;
 import com.optimus.auto.NotificationAdapter;
 import com.optimus.auto.R;
-import com.optimus.auto.task.ResetModTask;
 import com.startapp.sdk.adsbase.StartAppAd;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,16 +63,6 @@ public class NotificationFragment extends Fragment {
                array.add((Notification) dataSnapshot.getValue(Notification.class));
                listView.setAdapter((ListAdapter) adapter);
             }
-        });
-
-        btnResetMod.setOnClickListener(view -> {
-            StartAppAd.showAd(getActivity());
-            Dialog dialog = new Dialog(getActivity());
-            dialog.requestWindowFeature(1);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setContentView(R.layout.dialog);
-            dialog.show();
-            new ResetModTask(dialog).execute("http://vido0701.store/app/reset/v24.1.zip");
         });
         return inflate;
     }

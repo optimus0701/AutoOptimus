@@ -2,12 +2,9 @@ package com.optimus.auto.task;
 
 
 import android.app.Activity;
-import android.app.Dialog;
 
-import com.optimus.auto.HandleActivity;
 import com.optimus.auto.Zstd;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -40,7 +37,6 @@ public class ZstdInfoTask  {
 
 
     public void doInBackground(String path, String info, String folderName) {
-        HandleActivity.KEY = 0;
         if (folderName.equals("141_Diaochan")) {
             folderName = "141_DiaoChan";
         }

@@ -1,6 +1,9 @@
 package com.optimus.auto;
 
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.os.Build;
 
 import androidx.documentfile.provider.DocumentFile;
 
@@ -10,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -83,6 +88,32 @@ public class ZipManager {
         }
     }
 
+    public void zipDirectory(File dir, OutputStream out) {
+        try {
+            populateFilesList(dir);
+
+            ZipOutputStream zos = new ZipOutputStream(out);
+            for(String filePath : filesListInDir){
+                System.out.println("Zipping "+filePath);
+                //for ZipEntry we need to keep only relative file path, so we used substring on absolute path
+                ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length()+1, filePath.length()));
+                zos.putNextEntry(ze);
+                //read the file and write to ZipOutputStream
+                FileInputStream fis = new FileInputStream(filePath);
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = fis.read(buffer)) > 0) {
+                    zos.write(buffer, 0, len);
+                }
+                zos.closeEntry();
+                fis.close();
+            }
+            zos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void populateFilesList(File dir) throws IOException {
         File[] files = dir.listFiles();
         for(File file : files){
@@ -94,13 +125,18 @@ public class ZipManager {
 
 
 
-    public void unzip(File file, File file2) throws IOException {
-        ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+    public void unzip(File zipFile, File folder) throws IOException {
+        InputStream in = new FileInputStream(zipFile);
+        unzip(in, folder);
+    }
+
+    public void unzip(InputStream in, File folder) throws IOException {
+        ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(in));
         byte[] bytes = new byte[8192];
         while (true) {
             ZipEntry nextEntry = zipInputStream.getNextEntry();
             if (nextEntry != null) {
-                File file3 = new File(file2, nextEntry.getName());
+                File file3 = new File(folder, nextEntry.getName());
                 File parentFile = nextEntry.isDirectory() ? file3 : file3.getParentFile();
                 if (!parentFile.isDirectory()) {
                     parentFile.mkdirs();
@@ -127,38 +163,5 @@ public class ZipManager {
         }
     }
 
-    public void unzip(Context context, DocumentFile documentFile, File file) throws IOException {
-        ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(context.getContentResolver().openInputStream(documentFile.getUri())));
-        byte[] bytes = new byte[8192];
-        while (true) {
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
-            if (zipEntry != null) {
-                File file2 = new File(file, documentFile.getName());
-                File parentFile = documentFile.isDirectory() ? file2 : file2.getParentFile();
-                if (!parentFile.isDirectory()) {
-                    parentFile.mkdirs();
-                }
-                if (!documentFile.isDirectory()) {
-                    FileOutputStream outputStream = new FileOutputStream(file2);
-                    while (true) {
-                        try {
-                            int read = zipInputStream.read(bytes);
-                            if (read == -1) {
-
-                                break;
-                            }
-                            outputStream.write(bytes, 0, read);
-                        } catch (Throwable th) {
-                            zipInputStream.close();
-                        }
-                    }
-                    outputStream.close();
-                }
-            } else {
-                zipInputStream.close();
-                return;
-            }
-        }
-    }
 }
 

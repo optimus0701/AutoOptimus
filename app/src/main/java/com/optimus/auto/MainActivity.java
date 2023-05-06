@@ -1,12 +1,21 @@
 package com.optimus.auto;
 
+import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -33,7 +42,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int FRAGMENT_REPORT = 2;
     public static final int FRAGMENT_RESET_PASS = 5;
     public static final int FRAGMENT_SIGNUP = 4;
-    public static final String SRC = Environment.getExternalStorageDirectory() + "/";
+    public static final String SRC = Build.VERSION.SDK_INT >= 30 ?
+            Environment.getExternalStorageDirectory() + "/"
+            : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/";
     public static int currentFragment = 0;
     private FirebaseAuth auth;
     private Banner banner;
@@ -48,16 +59,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
-        this.auth = FirebaseAuth.getInstance();
+
+        auth = FirebaseAuth.getInstance();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, this.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        this.drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        this.header = headerView;
+        header = headerView;
         headerView.setFitsSystemWindows(true);
         initView();
         this.banner.loadAd();
@@ -73,12 +87,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void initView() {
-        this.tvUserEmail = (TextView) this.header.findViewById(R.id.header_user_email);
-        this.tvUsername = (TextView) this.header.findViewById(R.id.header_username);
-        this.btnLogout = (Button) this.header.findViewById(R.id.header_btn_logout);
-        this.banner = (Banner) findViewById(R.id.startAppBanner);
-        if (checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == PackageManager.PERMISSION_DENIED) {
-            requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 1000);
+        this.tvUserEmail = this.header.findViewById(R.id.header_user_email);
+        this.tvUsername = this.header.findViewById(R.id.header_username);
+        this.btnLogout = this.header.findViewById(R.id.header_btn_logout);
+        this.banner = findViewById(R.id.startAppBanner);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Utils.isPermissionGranted(this)) {
+                takePermission();
+            }
+        }
+
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
         } else {
             checkUser();
         }
@@ -146,15 +167,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onRequestPermissionsResult(int i, String[] strArr, int[] iArr) {
-        if (i == 1000) {
-            if (iArr.length > 0 && iArr[0] == -1) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1000) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 finish();
             } else {
                 checkUser();
             }
+        } else if (requestCode == 101) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        takePermission();
+                    }
+                }
+            }
         }
-        super.onRequestPermissionsResult(i, strArr, iArr);
+    }
+
+
+
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void takePermission() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            intent.addCategory("android.intent.category.DEFAULT");
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivityForResult(intent, 101);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            startActivityForResult(intent, 101);
+        }
     }
 
     public static boolean deleteDirectory(File file) {
@@ -167,4 +217,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return file.delete();
     }
+
+
 }

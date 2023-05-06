@@ -1,8 +1,8 @@
 package com.optimus.auto.task;
 
 import android.app.Activity;
+import android.os.Looper;
 import android.widget.Toast;
-
 import com.optimus.auto.Zstd;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,6 @@ public class ZstdActionTask {
     private OnTaskCompleted listener;
 
 
-
     public ZstdActionTask(Activity activity, OnTaskCompleted onTaskCompleted, String auth) {
         this.listener = onTaskCompleted;
         this.auth = auth;
@@ -26,7 +25,7 @@ public class ZstdActionTask {
         new Thread(() -> {
             doInBackground(path, info, folderName);
             activity.runOnUiThread(() -> {
-                Toast.makeText(activity, "Đã Xong", Toast.LENGTH_LONG).show();
+
             });
         }).start();
     }
@@ -50,27 +49,5 @@ public class ZstdActionTask {
             }
         }
     }
-//    @Override
-//    public Void doInBackground(String... strArr) {
-//
-//            String str6 = strArr[0];
-//            String str7 = strArr[1];
-//            String str8 = strArr[2];
-//            String str9 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/ao/action/";
-//            if (str7.equals("")) {
-//                replacement = "prefab_skill_effects/hero_skill_effects/" + str8;
-//            } else {
-//                replacement = "prefab_skill_effects/hero_skill_effects/" + str8 + "/" + str7;
-//            }
-//            try {
-//                Zstd.zstd(this.context, Uri.parse(str6), str9, this.auth, str8 + "/skill", replacement);
-//                return null;
-//            } catch (IOException e2) {
-//                e2.printStackTrace();
-//                Toast.makeText(this.context, "" + e2.getMessage(), Toast.LENGTH_LONG).show();
-//                return null;
-//            }
-//        }
-//    }
 
 }
